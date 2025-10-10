@@ -5,6 +5,7 @@ Defines an abstract base class for any device.
 """
 import threading
 import logging
+import socket
 from abc import ABC, abstractmethod
 
 
@@ -70,12 +71,5 @@ class DeviceBase(ABC):
         Returns:
             bool: Connection status (default: False).
         """
+        self.connected = False
         return False
-
-    def _send_command(self, command:str) -> None:
-        """Sends a command to the device."""
-        pass
-
-    def _read_reply(self) -> bytes:
-        """Reads a reply from the device."""
-        pass
