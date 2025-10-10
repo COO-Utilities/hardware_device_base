@@ -5,7 +5,6 @@ Defines an abstract base class for any device.
 """
 import threading
 import logging
-import socket
 from abc import ABC, abstractmethod
 
 
@@ -27,12 +26,8 @@ class DeviceBase(ABC):
         # thread lock
         self.lock = threading.Lock()
 
-        # set up socket
-        self.socket = None
+        # connection status
         self.connected = False
-
-        # last error message
-        self.last_error =  ""
 
         # set up logging
         self.verbose = False
@@ -58,18 +53,22 @@ class DeviceBase(ABC):
     @abstractmethod
     def connect(self, host:str, port:int) -> None:
         """Establishes a connection to the specified host and port."""
-        pass
+        self.connected = True
 
     @abstractmethod
     def disconnect(self) -> None:
         """Disconnects from the device."""
-        pass
+        self.connected = False
 
     def is_connected(self) -> bool:
         """Optional concrete method that subclasses may override.
 
         Returns:
-            bool: Connection status (default: False).
+            bool: Connection status.
         """
-        self.connected = False
-        return False
+        return self.connected
+
+    def set_verbose(self, verbose: bool) -> None:
+        """Sets verbose mode."""
+        self.verbose = verbose
+        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
