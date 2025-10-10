@@ -8,10 +8,8 @@ from device_base import DeviceBase
 class ExampleDevice(DeviceBase):
     """Example device class."""
 
-
     def __init__(self, log: bool = True, logfile: str = None, read_timeout: float = 1.0) -> None:
         super().__init__(log, logfile)
-        self.connected = False
         self.sock: socket.socket | None = None
         self.read_timeout = read_timeout
 
