@@ -11,8 +11,24 @@ from typing import Union
 
 class HardwareDeviceBase(ABC):
     """
-    Abstract base class for any device.
-    All subclasses must implement connect(), disconnect() methods.
+    Abstract base class for any hardware device.
+
+    This class defines the interface for establishing or closing a connection to a hardware device,
+    and getting an atomic telemetry item from the device.  It also provides a logging feature that
+    includes a console logger and defaults to logging.INFO level of logging.  A thread locking
+    feature is also included.
+
+    Subclasses must implement the following methods:
+        * `connect()`: Establish a connection.
+        * `disconnect()`: Gracefully close the connection.
+        * `get_atomic_value()`: Get an atomic telemetry value.
+
+    Subclasses may optionally override or use the following concrete methods:
+        * `is_connected()`: Return True if the connection is active.
+        * `set_connected()`: Set the connected status.
+        * `set_verbose()`: Set the verbose level to include DEBUG logging (True) or not (False).
+
+    See example_hardware_device_base.py for example usage.
     """
 
     def __init__(self, log: bool =True, logfile: str = None):
@@ -53,15 +69,23 @@ class HardwareDeviceBase(ABC):
 
     def set_verbose(self, verbose: bool =True) -> None:
         """Sets verbose mode.
-        :param bool verbose: Verbose mode.
+        :param bool verbose: Verbose mode: True (default) DEBUG level or False INFO level.
         """
         self.verbose = verbose
         self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
         self.logger.debug("Verbose mode: %s", verbose)
 
     @abstractmethod
-    def connect(self, host:str, port:int) -> None:
-        """Establishes a connection to the specified host and port."""
+    def connect(self, *args, **kwargs) -> None:
+        """Establishes a connection to the device.
+
+        :param args: Positional arguments to pass to the constructor.
+        :param kwargs: Keyword arguments to pass to the constructor.
+
+        These arguments should only provide what is needed to establish a connection.
+        Examples include host and port for a socket connection, or port and baud rate
+        for a direct serial connection.
+        """
         self.connected = True
 
     @abstractmethod
