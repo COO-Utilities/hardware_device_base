@@ -1,8 +1,9 @@
-# template
-Template for low-level device modules, which includes the abstract class
+# hardware device template
+Template for low-level hardware device modules, which includes the abstract class
 
-DeviceBase
+HardwareDeviceBase
 
-This class has two abstract methods:
+This class has three abstract methods:
     connect(self, host, port)
     disconnect(self)
+    get_atomic_value(item)
