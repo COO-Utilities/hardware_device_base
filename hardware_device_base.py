@@ -68,7 +68,10 @@ class HardwareDeviceBase(ABC):
 
     @abstractmethod
     def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
-        """Returns the value from the specified item."""
+        """Returns the value from the specified item.
+        :param str item: item to get the value from.
+        :return: value from the specified item.
+        """
         return NotImplemented
 
     def is_connected(self) -> bool:
