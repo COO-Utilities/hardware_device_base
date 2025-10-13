@@ -52,10 +52,12 @@ class HardwareDeviceBase(ABC):
             self.logger.addHandler(file_handler)
 
     def set_verbose(self, verbose: bool =True) -> None:
-        """Sets verbose mode."""
+        """Sets verbose mode.
+        :param bool verbose: Verbose mode.
+        """
         self.verbose = verbose
-        self.logger.debug("Verbose mode: %s", verbose)
         self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+        self.logger.debug("Verbose mode: %s", verbose)
 
     @abstractmethod
     def connect(self, host:str, port:int) -> None:
