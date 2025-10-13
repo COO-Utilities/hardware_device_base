@@ -76,13 +76,12 @@ class HardwareDeviceBase(ABC):
         self.logger.debug("Verbose mode: %s", verbose)
 
     @abstractmethod
-    def connect(self, *args, **kwargs) -> None:
+    def connect(self, *args) -> None:
         """Establishes a connection to the device.
 
         :param args: Positional arguments to pass to the constructor.
-        :param kwargs: Keyword arguments to pass to the constructor.
 
-        These arguments should only provide what is needed to establish a connection.
+        The arguments should only provide what is needed to establish a connection.
         Examples include host and port for a socket connection, or port and baud rate
         for a direct serial connection.
         """
@@ -92,6 +91,22 @@ class HardwareDeviceBase(ABC):
     def disconnect(self) -> None:
         """Disconnects from the device."""
         self.connected = False
+
+    @abstractmethod
+    def _send_command(self, command: str, *args) -> bool:
+        """Send a command to the device.
+
+        :param str command: Command to send.
+        :param args: Positional arguments to pass to the constructor.
+        :return: True if command was sent, False otherwise.
+        """
+        return True
+
+    @abstractmethod
+    def _read_reply(self) -> Union[bytes, str, list, float, None]:
+        """Receive a reply from the device.
+        :return: The reply or None if no reply was received."""
+        return None
 
     @abstractmethod
     def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:

@@ -16,20 +16,52 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         self.sock: socket.socket | None = None
         self.read_timeout = read_timeout
 
-    def connect(self, host: str, port: int) -> None:
+    def connect(self, *args) -> None:
         """Connects to the device."""
+        if len(args) < 2:
+            self.logger.error("connect requires 2 arguments: host and port")
+        host = args[0]
+        if not isinstance(host, str):
+            self.logger.error("connect requires host as a string")
+            return
+        port = args[1]
+        if not isinstance(port, int):
+            self.logger.error("connect requires port as an integer")
+            return
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.connect((host, port))
         self.sock.settimeout(self.read_timeout)
         self.set_connected(True)
         self.logger.info("Connected to %s:%d", host, port)
 
+    def _send_command(self, command: str, *args) -> bool:
+        """Send a command to the device."""
+        if not self.is_connected():
+            self.logger.error("Device is not connected")
+            return False
+        if len(args) > 0:
+            command = command + " ".join(args)
+        self.sock.send(command.encode())
+        self.logger.debug("Sent command: %s", command)
+        return True
+
+    def _read_reply(self) -> Union[bytes, str, list, float, None]:
+        """Receive a reply from the device."""
+        if not self.is_connected():
+            self.logger.error("Device is not connected")
+            return None
+        reply = self.sock.recv(1024)
+        return reply.decode()
+
     def disconnect(self) -> None:
         """Disconnects from the device."""
-        self.sock.close()
-        self.sock = None
-        self.set_connected(False)
-        self.logger.info("Disconnected from device")
+        if self.is_connected():
+            self.sock.close()
+            self.sock = None
+            self.set_connected(False)
+            self.logger.info("Disconnected from device")
+        else:
+            self.logger.warning("Already disconnected from device")
 
     def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
         """Returns the value from the specified item.
