@@ -85,7 +85,7 @@ class HardwareDeviceBase(ABC):
     def set_connected(self, connected: bool) -> None:
         """Optional concrete method that subclasses may override.
 
-        :param bool connected: Whether the device has already been established.
+        :param bool connected: Whether the device connection has already been established.
         :return: None
         """
         self.connected = connected
