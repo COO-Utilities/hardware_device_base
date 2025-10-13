@@ -51,9 +51,10 @@ class HardwareDeviceBase(ABC):
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 
-    def set_verbose(self, verbose: bool) -> None:
+    def set_verbose(self, verbose: bool =True) -> None:
         """Sets verbose mode."""
         self.verbose = verbose
+        self.logger.debug("Verbose mode: %s", verbose)
         self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
 
     @abstractmethod
