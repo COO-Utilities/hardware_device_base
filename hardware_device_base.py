@@ -47,7 +47,7 @@ class HardwareDeviceBase(ABC):
             formatter = logging.Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
-            file_handler = logging.FileHandler(logfile + ".log")
+            file_handler = logging.FileHandler(logfile if ".log" in logfile else logfile + ".log")
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 

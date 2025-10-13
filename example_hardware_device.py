@@ -10,7 +10,8 @@ from hardware_device_base import HardwareDeviceBase
 class ExampleHardwareDevice(HardwareDeviceBase):
     """Example device class."""
 
-    def __init__(self, log: bool = True, logfile: str = None, read_timeout: float = 1.0) -> None:
+    def __init__(self, log: bool = True, logfile: str = __name__.rsplit(".", 1)[-1],
+                 read_timeout: float = 1.0) -> None:
         super().__init__(log, logfile)
         self.sock: socket.socket | None = None
         self.read_timeout = read_timeout
@@ -39,6 +40,8 @@ class ExampleHardwareDevice(HardwareDeviceBase):
             self.logger.error("Device is not connected")
             return None
         if "temperature" in item:
-            return 10.5
+            # Code for retrieving the temperature from the device.
+            temp = 10.5
+            return temp
         self.logger.error("Unknown item '%s'", item)
         return None
