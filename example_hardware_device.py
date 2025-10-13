@@ -38,10 +38,12 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         """
         if not self.is_connected():
             self.logger.error("Device is not connected")
-            return None
-        if "temperature" in item:
+            retval = None
+        elif "temperature" in item:
             # Code for retrieving the temperature from the device.
-            temp = 10.5
-            return temp
-        self.logger.error("Unknown item '%s'", item)
-        return None
+            retval = 10.5
+        else:
+            retval = None
+            self.logger.error("Unknown item '%s'", item)
+        self.logger.debug("Return value: %s", retval)
+        return retval
