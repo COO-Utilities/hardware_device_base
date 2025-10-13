@@ -4,6 +4,6 @@ Template for low-level hardware device modules, which includes the abstract clas
 HardwareDeviceBase
 
 This class has three abstract methods:
-    connect(self, host, port)
-    disconnect(self)
-    get_atomic_value(item)
+   - connect(self, host, port)
+   - disconnect(self)
+   - get_atomic_value(item)
