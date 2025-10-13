@@ -41,7 +41,7 @@ class ExampleHardwareDevice(HardwareDeviceBase):
             return False
         if len(args) > 0:
             command = command + " ".join(args)
-        self.sock.send(command.encode())
+        self.sock.sendall(command.encode())
         self.logger.debug("Sent command: %s", command)
         return True
 
