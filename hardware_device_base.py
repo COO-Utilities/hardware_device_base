@@ -1,14 +1,15 @@
 """
-device_base.py
+hardware_device_base.py
 
 Defines an abstract base class for any device.
 """
 import threading
 import logging
 from abc import ABC, abstractmethod
+from typing import Union
 
 
-class DeviceBase(ABC):
+class HardwareDeviceBase(ABC):
     """
     Abstract base class for any device.
     All subclasses must implement connect(), disconnect() methods.
@@ -50,6 +51,11 @@ class DeviceBase(ABC):
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 
+    def set_verbose(self, verbose: bool) -> None:
+        """Sets verbose mode."""
+        self.verbose = verbose
+        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+
     @abstractmethod
     def connect(self, host:str, port:int) -> None:
         """Establishes a connection to the specified host and port."""
@@ -60,6 +66,11 @@ class DeviceBase(ABC):
         """Disconnects from the device."""
         self.connected = False
 
+    @abstractmethod
+    def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
+        """Returns the value from the specified item."""
+        return NotImplemented
+
     def is_connected(self) -> bool:
         """Optional concrete method that subclasses may override.
 
@@ -68,7 +79,10 @@ class DeviceBase(ABC):
         """
         return self.connected
 
-    def set_verbose(self, verbose: bool) -> None:
-        """Sets verbose mode."""
-        self.verbose = verbose
-        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    def set_connected(self, connected: bool) -> None:
+        """Optional concrete method that subclasses may override.
+
+        :param bool connected: Whether the device has already been established.
+        :return: None
+        """
+        self.connected = connected

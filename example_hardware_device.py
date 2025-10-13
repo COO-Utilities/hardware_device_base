@@ -1,11 +1,13 @@
 """
-example_device.py
+example_hardware_device.py
 """
 import socket
-from device_base import DeviceBase
+from typing import Union
+
+from hardware_device_base import HardwareDeviceBase
 
 
-class ExampleDevice(DeviceBase):
+class ExampleHardwareDevice(HardwareDeviceBase):
     """Example device class."""
 
     def __init__(self, log: bool = True, logfile: str = None, read_timeout: float = 1.0) -> None:
@@ -18,16 +20,25 @@ class ExampleDevice(DeviceBase):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.connect((host, port))
         self.sock.settimeout(self.read_timeout)
-        self.connected = True
+        self.set_connected(True)
         self.logger.info("Connected to %s:%d", host, port)
 
     def disconnect(self) -> None:
         """Disconnects from the device."""
         self.sock.close()
         self.sock = None
-        self.connected = False
+        self.set_connected(False)
         self.logger.info("Disconnected from device")
 
-    def is_connected(self) -> bool:
-        """Checks if the device is connected."""
-        return self.sock is not None
+    def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
+        """Returns the value from the specified item.
+        :param item: The item to get the value from.
+        :return: The value from the specified item.
+        """
+        if not self.is_connected():
+            self.logger.error("Device is not connected")
+            return None
+        if "temperature" in item:
+            return 10.5
+        self.logger.error("Unknown item '%s'", item)
+        return None
