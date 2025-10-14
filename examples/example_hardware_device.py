@@ -53,13 +53,6 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         reply = self.sock.recv(1024)
         return reply.decode()
 
-    def _set_connected(self, connected: bool) -> None:
-        """Set connected status.
-        :param bool connected: Whether the device connection has already been established.
-        :return: None
-        """
-        self.connected = connected
-
     def disconnect(self) -> None:
         """Disconnects from the device."""
         if self.is_connected():

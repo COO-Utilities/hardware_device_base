@@ -100,15 +100,14 @@ class HardwareDeviceBase(ABC):
         :param args: Positional arguments to pass to the constructor.
         :return: True if command was sent, False otherwise.
         """
-        return True
+        return NotImplemented
 
     @abstractmethod
     def _read_reply(self) -> Union[str, None]:
         """Receive a reply from the device.
         :return: The reply or None if no reply was received."""
-        return None
+        return NotImplemented
 
-    @abstractmethod
     def _set_connected(self, connected: bool) -> None:
         """Optional concrete method that subclasses may override.
 
