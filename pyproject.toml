@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 # Basic information about your project.
-name = "hardware_device_template"
+name = "hardware_device_base"
 version = "0.1.0" 
 dependencies = [
     "setuptools>=42",
