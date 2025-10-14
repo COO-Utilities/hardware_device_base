@@ -28,7 +28,7 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         if not isinstance(port, int):
             self.logger.error("connect requires port as an integer")
             return
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((host, port))
         self.sock.settimeout(self.read_timeout)
         self.set_connected(True)
