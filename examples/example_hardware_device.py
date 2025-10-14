@@ -31,7 +31,7 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.connect((host, port))
         self.sock.settimeout(self.read_timeout)
-        self.set_connected(True)
+        self._set_connected(True)
         self.logger.info("Connected to %s:%d", host, port)
 
     def _send_command(self, command: str, *args) -> bool:
@@ -53,12 +53,19 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         reply = self.sock.recv(1024)
         return reply.decode()
 
+    def _set_connected(self, connected: bool) -> None:
+        """Set connected status.
+        :param bool connected: Whether the device connection has already been established.
+        :return: None
+        """
+        self.connected = connected
+
     def disconnect(self) -> None:
         """Disconnects from the device."""
         if self.is_connected():
             self.sock.close()
             self.sock = None
-            self.set_connected(False)
+            self._set_connected(False)
             self.logger.info("Disconnected from device")
         else:
             self.logger.warning("Already disconnected from device")

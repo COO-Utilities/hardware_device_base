@@ -109,6 +109,15 @@ class HardwareDeviceBase(ABC):
         return None
 
     @abstractmethod
+    def _set_connected(self, connected: bool) -> None:
+        """Optional concrete method that subclasses may override.
+
+        :param bool connected: Whether the device connection has already been established.
+        :return: None
+        """
+        self.connected = connected
+
+    @abstractmethod
     def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
         """Returns the value from the specified item.
         :param str item: item to get the value from.
@@ -123,11 +132,3 @@ class HardwareDeviceBase(ABC):
             bool: Connection status.
         """
         return self.connected
-
-    def set_connected(self, connected: bool) -> None:
-        """Optional concrete method that subclasses may override.
-
-        :param bool connected: Whether the device connection has already been established.
-        :return: None
-        """
-        self.connected = connected
