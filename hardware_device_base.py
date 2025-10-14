@@ -103,7 +103,7 @@ class HardwareDeviceBase(ABC):
         return True
 
     @abstractmethod
-    def _read_reply(self) -> Union[bytes, str, list, float, None]:
+    def _read_reply(self) -> Union[str, None]:
         """Receive a reply from the device.
         :return: The reply or None if no reply was received."""
         return None

@@ -45,7 +45,7 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         self.logger.debug("Sent command: %s", command)
         return True
 
-    def _read_reply(self) -> Union[bytes, str, list, float, None]:
+    def _read_reply(self) -> Union[str, None]:
         """Receive a reply from the device."""
         if not self.is_connected():
             self.logger.error("Device is not connected")
