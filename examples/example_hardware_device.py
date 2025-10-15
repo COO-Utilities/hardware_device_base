@@ -16,23 +16,29 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         self.sock: socket.socket | None = None
         self.read_timeout = read_timeout
 
-    def connect(self, *args) -> None:
+    def connect(self, *args, con_type="tcp") -> None:
         """Connects to the device."""
-        if len(args) < 2:
-            self.logger.error("connect requires 2 arguments: host and port")
-        host = args[0]
-        if not isinstance(host, str):
-            self.logger.error("connect requires host as a string")
+        if con_type == "tcp":
+            if len(args) < 2:
+                self.logger.error("connect requires 2 arguments: host and port")
+            host = args[0]
+            if not isinstance(host, str):
+                self.logger.error("connect requires host as a string")
+                return
+            port = args[1]
+            if not isinstance(port, int):
+                self.logger.error("connect requires port as an integer")
+                return
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((host, port))
+            self.sock.settimeout(self.read_timeout)
+            self._set_connected(True)
+            self.logger.info("Connected to %s:%d", host, port)
+        elif con_type == "serial":
+            self.logger.error("serial connection not implemented.")
             return
-        port = args[1]
-        if not isinstance(port, int):
-            self.logger.error("connect requires port as an integer")
-            return
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
-        self.sock.settimeout(self.read_timeout)
-        self._set_connected(True)
-        self.logger.info("Connected to %s:%d", host, port)
+        else:
+            self.logger.error("unknown con_type: %s", con_type)
 
     def _send_command(self, command: str, *args) -> bool:
         """Send a command to the device."""

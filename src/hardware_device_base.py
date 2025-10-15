@@ -76,10 +76,11 @@ class HardwareDeviceBase(ABC):
         self.logger.debug("Verbose mode: %s", verbose)
 
     @abstractmethod
-    def connect(self, *args) -> None:
+    def connect(self, *args, con_type: str ="tcp") -> None:
         """Establishes a connection to the device.
 
         :param args: Positional arguments to pass to the constructor.
+        :param str con_type: Type of connection to establish: serial or tcp.
 
         The arguments should only provide what is needed to establish a connection.
         Examples include host and port for a socket connection, or port and baud rate
