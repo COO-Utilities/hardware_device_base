@@ -18,27 +18,22 @@ class ExampleHardwareDevice(HardwareDeviceBase):
 
     def connect(self, *args, con_type="tcp") -> None:
         """Connects to the device."""
-        if con_type == "tcp":
-            if len(args) < 2:
-                self.logger.error("connect requires 2 arguments: host and port")
-            host = args[0]
-            if not isinstance(host, str):
-                self.logger.error("connect requires host as a string")
+        if self.validate_connection_params(args):
+            if con_type == "tcp":
+                host = args[0]
+                port = args[1]
+                self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.sock.connect((host, port))
+                self.sock.settimeout(self.read_timeout)
+                self._set_connected(True)
+                self.logger.info("Connected to %s:%d", host, port)
+            elif con_type == "serial":
+                self.logger.error("serial connection not implemented.")
                 return
-            port = args[1]
-            if not isinstance(port, int):
-                self.logger.error("connect requires port as an integer")
-                return
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((host, port))
-            self.sock.settimeout(self.read_timeout)
-            self._set_connected(True)
-            self.logger.info("Connected to %s:%d", host, port)
-        elif con_type == "serial":
-            self.logger.error("serial connection not implemented.")
-            return
+            else:
+                self.logger.error("unknown con_type: %s", con_type)
         else:
-            self.logger.error("unknown con_type: %s", con_type)
+            self.logger.error("invalid connection params: %s", args)
 
     def _send_command(self, command: str, *args) -> bool:
         """Send a command to the device."""
@@ -47,7 +42,8 @@ class ExampleHardwareDevice(HardwareDeviceBase):
             return False
         if len(args) > 0:
             command = command + " ".join(args)
-        self.sock.sendall(command.encode())
+        with self.lock:
+            self.sock.sendall(command.encode())
         self.logger.debug("Sent command: %s", command)
         return True
 

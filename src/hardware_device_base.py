@@ -16,17 +16,22 @@ class HardwareDeviceBase(ABC):
     This class defines the interface for establishing or closing a connection to a hardware device,
     and getting an atomic telemetry item from the device.  It also provides a logging feature that
     includes a console logger and defaults to logging.INFO level of logging.  A thread locking
-    feature is also included.
+    feature is also included (see _send_command method).
 
-    Subclasses must implement the following methods:
+    Subclasses must implement the following public methods:
         * `connect()`: Establish a connection.
         * `disconnect()`: Gracefully close the connection.
         * `get_atomic_value()`: Get an atomic telemetry value.
 
+    Subclasses must also implement the following private methods:
+        * `_send_command()`: Send a command.
+        * `_read_reply()`: Receive a reply.
+
     Subclasses may optionally override or use the following concrete methods:
-        * `is_connected()`: Return True if the connection is active.
-        * `set_connected()`: Set the connected status.
         * `set_verbose()`: Set the verbose level to include DEBUG logging (True) or not (False).
+        * `is_connected()`: Return True if the connection is active.
+        * `_set_connected()`: Set the connected status.
+
 
     See example_hardware_device_base.py for example usage.
     """
@@ -67,14 +72,7 @@ class HardwareDeviceBase(ABC):
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
 
-    def set_verbose(self, verbose: bool =True) -> None:
-        """Sets verbose mode.
-        :param bool verbose: Verbose mode: True (default) DEBUG level or False INFO level.
-        """
-        self.verbose = verbose
-        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
-        self.logger.debug("Verbose mode: %s", verbose)
-
+    # public abstract methods
     @abstractmethod
     def connect(self, *args, con_type: str ="tcp") -> None:
         """Establishes a connection to the device.
@@ -83,8 +81,10 @@ class HardwareDeviceBase(ABC):
         :param str con_type: Type of connection to establish: serial or tcp.
 
         The arguments should only provide what is needed to establish a connection.
-        Examples include host and port for a socket connection, or port and baud rate
-        for a direct serial connection.
+        Socket Example:
+            self.connect("127.0.01", 9999)
+        Serial Example:
+            self.connect("/dev/tty1", 9600, con_type="serial")
         """
         self.connected = True
 
@@ -94,12 +94,26 @@ class HardwareDeviceBase(ABC):
         self.connected = False
 
     @abstractmethod
+    def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
+        """Returns the value from the specified item.
+        :param str item: item to get the value from.
+        :return: value from the specified item.
+        """
+        return NotImplemented
+
+    # private abstract methods
+    @abstractmethod
     def _send_command(self, command: str, *args) -> bool:
         """Send a command to the device.
 
         :param str command: Command to send.
         :param args: Positional arguments to pass to the constructor.
         :return: True if command was sent, False otherwise.
+
+        This command should lock the thread when sending the command
+        Example:
+            with self.lock:
+                self.sock.sendall(command.encode())
         """
         return NotImplemented
 
@@ -109,21 +123,14 @@ class HardwareDeviceBase(ABC):
         :return: The reply or None if no reply was received."""
         return NotImplemented
 
-    def _set_connected(self, connected: bool) -> None:
-        """Optional concrete method that subclasses may override.
-
-        :param bool connected: Whether the device connection has already been established.
-        :return: None
+    # public concrete methods
+    def set_verbose(self, verbose: bool =True) -> None:
+        """Sets verbose mode.
+        :param bool verbose: Verbose mode: True (default) DEBUG level or False INFO level.
         """
-        self.connected = connected
-
-    @abstractmethod
-    def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
-        """Returns the value from the specified item.
-        :param str item: item to get the value from.
-        :return: value from the specified item.
-        """
-        return NotImplemented
+        self.verbose = verbose
+        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+        self.logger.debug("Verbose mode: %s", verbose)
 
     def is_connected(self) -> bool:
         """Optional concrete method that subclasses may override.
@@ -132,3 +139,27 @@ class HardwareDeviceBase(ABC):
             bool: Connection status.
         """
         return self.connected
+
+    def validate_connection_params(self, *args) -> bool:
+        """Validates connection parameters.
+        :param args: Positional arguments to pass to the constructor.
+        """
+        if len(args) < 2:
+            self.logger.error("connect requires two connection parameters: %s", args)
+            return False
+        if not isinstance(args[0], str):
+            self.logger.error("First argument must be a string.")
+            return False
+        if not isinstance(args[1], int):
+            self.logger.error("Second argument must be a integer.")
+            return False
+        return True
+
+    # private concrete methods
+    def _set_connected(self, connected: bool) -> None:
+        """Optional concrete method that subclasses may override.
+
+        :param bool connected: Whether the device connection has already been established.
+        :return: None
+        """
+        self.connected = connected
