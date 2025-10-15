@@ -26,7 +26,7 @@ classifiers = [
 ]
 
 [tool.setuptools]
-package-dir = { hardware_device_base = "src" }
+package-dir = { hardware_device_base = "hardware_device_base" }
 packages = ["hardware_device_base"]  # explicitly declare the package
 
 [project.urls]
