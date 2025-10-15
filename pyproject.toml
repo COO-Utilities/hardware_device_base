@@ -25,10 +25,6 @@ classifiers = [
   "Programming Language :: Python"
 ]
 
-[tool.setuptools]
-package-dir = { hardware_device_base = "hardware_device_base" }
-packages = ["hardware_device_base"]  # explicitly declare the package
-
 [project.urls]
 # Various URLs related to your project. These links are displayed on PyPI.
 # Homepage = "https://example.com"
