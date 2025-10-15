@@ -142,15 +142,15 @@ class HardwareDeviceBase(ABC):
 
     def validate_connection_params(self, *args) -> bool:
         """Validates connection parameters.
-        :param args: Positional arguments to pass to the constructor.
+        :param args: Positional arguments for connect method.
         """
-        if len(args) < 2:
+        if len(args[0]) < 2:
             self.logger.error("connect requires two connection parameters: %s", args)
             return False
-        if not isinstance(args[0], str):
+        if not isinstance(args[0][0], str):
             self.logger.error("First argument must be a string.")
             return False
-        if not isinstance(args[1], int):
+        if not isinstance(args[0][1], int):
             self.logger.error("Second argument must be a integer.")
             return False
         return True
