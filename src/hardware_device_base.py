@@ -52,6 +52,7 @@ class HardwareDeviceBase(ABC):
         self.connected = False
 
         # set up logging
+
         self.verbose = False
         if logfile is None:
             logfile = __name__.rsplit(".", 1)[-1]
@@ -62,15 +63,17 @@ class HardwareDeviceBase(ABC):
             '%(asctime)s - %(levelname)s - %(message)s')
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(console_formatter)
-        self.logger.addHandler(console_handler)
-        # log to file if requested
-        if log:
-            formatter = logging.Formatter(
-                "%(asctime)s - %(levelname)s - %(funcName)s() - %(message)s"
-            )
-            file_handler = logging.FileHandler(logfile if ".log" in logfile else logfile + ".log")
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
+        if not self.logger.hasHandlers():
+            self.logger.addHandler(console_handler)
+            # log to file if requested
+            if log:
+                formatter = logging.Formatter(
+                    "%(asctime)s - %(levelname)s - %(funcName)s() - %(message)s"
+                )
+                file_handler = logging.FileHandler(
+                    logfile if ".log" in logfile else logfile + ".log")
+                file_handler.setFormatter(formatter)
+                self.logger.addHandler(file_handler)
 
     # public abstract methods
     @abstractmethod
