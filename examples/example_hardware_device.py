@@ -1,5 +1,27 @@
 """
 example_hardware_device.py
+
+TESTING:
+    Use netcat (nc) on linux/unix to mock a dummy device.
+
+    On one terminal issue the command:
+
+    `nc -l 9999`
+
+    Then run python in another terminal:
+
+    `python`
+    `>>> import examples.example_hardware_device as example_device`
+    `>>> exdev = example_device.ExampleHardwareDevice()`
+    `>>> exdev.connect("localhost", 9999)`
+    `>>> exdev._send_command("test")`
+
+    You should see the word "test" show up on the other terminal where nc is listening.
+    When done, you can disconnect from the device:
+
+    `>>> exdev.disconnect()`
+
+    The nc command should terminate.
 """
 import socket
 from typing import Union

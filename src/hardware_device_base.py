@@ -28,6 +28,7 @@ class HardwareDeviceBase(ABC):
         * `_read_reply()`: Receive a reply.
 
     Subclasses may optionally override or use the following concrete methods:
+        * `validate_connection_params()`: Validate the connection parameters.
         * `set_verbose()`: Set the verbose level to include DEBUG logging (True) or not (False).
         * `is_connected()`: Return True if the connection is active.
         * `_set_connected()`: Set the connected status.
