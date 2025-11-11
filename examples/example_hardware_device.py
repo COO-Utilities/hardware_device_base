@@ -35,26 +35,6 @@ class ExampleHardwareDevice(HardwareDeviceBase):
         else:
             self.logger.error("invalid connection params: %s", args)
 
-    def _send_command(self, command: str, *args) -> bool:
-        """Send a command to the device."""
-        if not self.is_connected():
-            self.logger.error("Device is not connected")
-            return False
-        if len(args) > 0:
-            command = command + " ".join(args)
-        with self.lock:
-            self.sock.sendall(command.encode())
-        self.logger.debug("Sent command: %s", command)
-        return True
-
-    def _read_reply(self) -> Union[str, None]:
-        """Receive a reply from the device."""
-        if not self.is_connected():
-            self.logger.error("Device is not connected")
-            return None
-        reply = self.sock.recv(1024)
-        return reply.decode()
-
     def disconnect(self) -> None:
         """Disconnects from the device."""
         if self.is_connected():
@@ -81,3 +61,23 @@ class ExampleHardwareDevice(HardwareDeviceBase):
             self.logger.error("Unknown item '%s'", item)
         self.logger.debug("Return value: %s", retval)
         return retval
+
+    def _send_command(self, command: str, *args) -> bool:
+        """Send a command to the device."""
+        if not self.is_connected():
+            self.logger.error("Device is not connected")
+            return False
+        if len(args) > 0:
+            command = command + " ".join(args)
+        with self.lock:
+            self.sock.sendall(command.encode())
+        self.logger.debug("Sent command: %s", command)
+        return True
+
+    def _read_reply(self) -> Union[str, None]:
+        """Receive a reply from the device."""
+        if not self.is_connected():
+            self.logger.error("Device is not connected")
+            return None
+        reply = self.sock.recv(1024)
+        return reply.decode()
