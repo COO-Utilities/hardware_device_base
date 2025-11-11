@@ -7,21 +7,16 @@ import threading
 import logging
 from abc import ABC, abstractmethod
 from typing import Union
+from hardware_device_base import HardwareDeviceBase
 
-
-class HardwareDeviceBase(ABC):
+class HardwareMotionBase(HardwareDeviceBase):
     """
-    Abstract base class for any hardware device.
+    Abstract base class for any hardware motion device.
 
-    This class defines the interface for establishing or closing a connection to a hardware device,
-    and getting an atomic telemetry item from the device.  It also provides a logging feature that
-    includes a console logger and defaults to logging.INFO level of logging.  A thread locking
-    feature is also included (see _send_command method).
+    This class defines the interface for interacting with the hardware motion device.
 
     Subclasses must implement the following public methods:
-        * `connect()`: Establish a connection.
-        * `disconnect()`: Gracefully close the connection.
-        * `get_atomic_value()`: Get an atomic telemetry value.
+        * `get_status()`: Get an atomic telemetry value.
 
     Subclasses must also implement the following private methods:
         * `_send_command()`: Send a command.
@@ -34,7 +29,7 @@ class HardwareDeviceBase(ABC):
         * `_set_connected()`: Set the connected status.
 
 
-    See example_hardware_device_base.py for example usage.
+    See example_hardware_stage.py for example usage.
     """
 
     def __init__(self, log: bool =True, logfile: str = None):
@@ -96,6 +91,14 @@ class HardwareDeviceBase(ABC):
     def disconnect(self) -> None:
         """Disconnects from the device."""
         self.connected = False
+
+    @abstractmethod
+    def get_atomic_value(self, item: str ="") -> Union[float, int, str, None]:
+        """Returns the value from the specified item.
+        :param str item: item to get the value from.
+        :return: value from the specified item.
+        """
+        return NotImplemented
 
     # private abstract methods
     @abstractmethod

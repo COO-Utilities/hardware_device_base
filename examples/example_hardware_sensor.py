@@ -1,5 +1,5 @@
 """
-example_hardware_device.py
+example_hardware_sensor.py
 
 TESTING:
     Use netcat (nc) on linux/unix to mock a dummy device.
@@ -26,10 +26,10 @@ TESTING:
 import socket
 from typing import Union
 
-from hardware_device_base import HardwareDeviceBase
+from hardware_device_base.hardware_sensor_base import HardwareSensorBase
 
 
-class ExampleHardwareDevice(HardwareDeviceBase):
+class ExampleHardwareDevice(HardwareSensorBase):
     """Example device class."""
 
     def __init__(self, log: bool = True, logfile: str = __name__.rsplit(".", 1)[-1],
