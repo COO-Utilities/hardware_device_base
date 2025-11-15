@@ -2,6 +2,23 @@
 hardware_device_base.py
 
 Defines an abstract base class for any device.
+method list:
+    Queries:
+        is_active
+        is_connected
+        is_closed_loop
+        get_error
+        get_pos
+        get_named_pos
+        get_target
+    Commands
+        connect
+        disconnect
+        home
+        close_loop
+        reference
+        set_pos
+        load_presets
 """
 import threading
 import logging
