@@ -6,7 +6,7 @@ Defines an abstract base class for any device.
 import threading
 import logging
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Union, Tuple
 
 
 class HardwareDeviceBase(ABC):
@@ -21,17 +21,18 @@ class HardwareDeviceBase(ABC):
     Subclasses must implement the following public methods:
         * `connect()`: Establish a connection.
         * `disconnect()`: Gracefully close the connection.
-        * `get_atomic_value()`: Get an atomic telemetry value.
 
     Subclasses must also implement the following private methods:
         * `_send_command()`: Send a command.
         * `_read_reply()`: Receive a reply.
 
     Subclasses may optionally override or use the following concrete methods:
-        * `validate_connection_params()`: Validate the connection parameters.
+        * `get_status()`: Get the status of the device.
         * `set_verbose()`: Set the verbose level to include DEBUG logging (True) or not (False).
         * `is_connected()`: Return True if the connection is active.
+        * `validate_connection_params()`: Validate the connection parameters.
         * `_set_connected()`: Set the connected status.
+        * `_set_status()`: Set the status of the device.
 
 
     See example_hardware_device_base.py for example usage.
@@ -52,8 +53,11 @@ class HardwareDeviceBase(ABC):
         # connection status
         self.connected = False
 
-        # set up logging
+        # device status
+        self.status = 0
+        self.status_string = ""
 
+        # set up logging
         self.verbose = False
         if logfile is None:
             logfile = __name__.rsplit(".", 1)[-1]
@@ -120,6 +124,10 @@ class HardwareDeviceBase(ABC):
         return NotImplemented
 
     # public concrete methods
+    def get_status(self) -> Union[Tuple[int, str], None]:
+        """Get the status of the device."""
+        return self.status, self.status_string
+
     def set_verbose(self, verbose: bool =True) -> None:
         """Sets verbose mode.
         :param bool verbose: Verbose mode: True (default) DEBUG level or False INFO level.
@@ -159,3 +167,12 @@ class HardwareDeviceBase(ABC):
         :return: None
         """
         self.connected = connected
+
+    def _set_status(self, status: Tuple[int, str]) -> None:
+        """Optional concrete method that subclasses may override.
+        :param Tuple[int, str] status: Status of the device."""
+        if isinstance(status[0], int) and isinstance(status[1], str):
+            self.status = status[0]
+            self.status_string = status[1]
+        else:
+            self.logger.error("Status must be a tuple of form (int, string).")
