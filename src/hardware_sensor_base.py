@@ -21,6 +21,8 @@ class HardwareSensorBase(HardwareDeviceBase):
     The following methods are from the general HardwareDeviceBase class defined in
     hardware_device_base.py:
 
+    def __init__(self, log: bool =True, logfile: str = None):
+
     Subclasses must implement the following public methods:
         * `connect()`: Establish a connection.
         * `disconnect()`: Gracefully close the connection.

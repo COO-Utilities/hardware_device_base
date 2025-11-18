@@ -14,7 +14,7 @@ class HardwareDeviceBase(ABC):
     Abstract base class for any hardware device.
 
     This class defines the interface for establishing or closing a connection to a hardware device,
-    and getting an atomic telemetry item from the device.  It also provides a logging feature that
+    and setting and getting the status of the device.  It also provides a logging feature that
     includes a console logger and defaults to logging.INFO level of logging.  A thread locking
     feature is also included (see _send_command method).
 
