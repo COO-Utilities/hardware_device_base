@@ -4,7 +4,7 @@ hardware_motion_base.py
 Defines an abstract base class for any motion device.
 """
 from abc import abstractmethod
-from typing import Union, Tuple
+from typing import Union, Tuple, Dict
 
 from hardware_device_base import HardwareDeviceBase
 
@@ -22,7 +22,6 @@ class HardwareMotionBase(HardwareDeviceBase):
         * `get_pos()`: Get the position of the hardware motion device.
         * `set_pos(pos)`: Set the position of the hardware motion device.
         * `get_limits()`: Get the limits of the hardware motion device.
-        * `set_limits(limits)`: Set the limits of the hardware motion device.
 
     The following methods are from the general HardwareDeviceBase class defined in
     hardware_device_base.py:
@@ -77,11 +76,6 @@ class HardwareMotionBase(HardwareDeviceBase):
         return NotImplemented
 
     @abstractmethod
-    def get_limits(self):
+    def get_limits(self) -> Union[Dict[str, Tuple[float, float]], None]:
         """Get the limits of the hardware motion device."""
-        return NotImplemented
-
-    @abstractmethod
-    def set_limits(self, limits: Tuple[Union[float, int]]) -> None:
-        """Set the limits of the hardware motion device."""
         return NotImplemented
