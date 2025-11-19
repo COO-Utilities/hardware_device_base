@@ -68,12 +68,12 @@ class HardwareMotionBase(HardwareDeviceBase):
         return NotImplemented
 
     @abstractmethod
-    def get_pos(self) -> Union[float, int, None]:
+    def get_pos(self, *args, **kwargs) -> Union[float, int, None]:
         """Get the position of the hardware motion device."""
         return NotImplemented
 
     @abstractmethod
-    def set_pos(self, pos: Union[float, int]) -> None:
+    def set_pos(self, *args, **kwargs) -> bool:
         """Set the position of the hardware motion device."""
         return NotImplemented
 
