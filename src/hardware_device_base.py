@@ -82,7 +82,7 @@ class HardwareDeviceBase(ABC):
 
     # public abstract methods
     @abstractmethod
-    def connect(self, *args, con_type: str ="tcp") -> None:
+    def connect(self, *args, **kwargs) -> None:
         """Establishes a connection to the device.
 
         :param args: Positional arguments to pass to the constructor.
@@ -103,9 +103,10 @@ class HardwareDeviceBase(ABC):
 
     # private abstract methods
     @abstractmethod
-    def _send_command(self, command: str, *args) -> bool:
+    def _send_command(self, *args, **kwargs) -> bool:
         """Send a command to the device.
 
+        Expects the following arguments:
         :param str command: Command to send.
         :param args: Positional arguments to pass to the constructor.
         :return: True if command was sent, False otherwise.
@@ -127,6 +128,21 @@ class HardwareDeviceBase(ABC):
     def get_status(self) -> Union[Tuple[int, str], None]:
         """Get the status of the device."""
         return self.status, self.status_string
+
+    def report_error(self, message: str, errno: int =-1) -> None:
+        """Report an error message."""
+        self.logger.error(message)
+        self._set_status((errno, message))
+
+    def report_info(self, message: str, errno: int =0) -> None:
+        """Report info message."""
+        self.logger.info(message)
+        self._set_status((errno, message))
+
+    def report_warning(self, message: str, errno: int =0) -> None:
+        """Report warning message."""
+        self.logger.warning(message)
+        self._set_status((errno, message))
 
     def set_verbose(self, verbose: bool =True) -> None:
         """Sets verbose mode.
