@@ -86,7 +86,7 @@ class HardwareDeviceBase(ABC):
         """Establishes a connection to the device.
 
         :param args: Positional arguments to pass to the constructor.
-        :param str con_type: Type of connection to establish: serial or tcp.
+        :param kwargs: Keyword arguments to pass to the constructor.
 
         The arguments should only provide what is needed to establish a connection.
         Socket Example:
