@@ -53,8 +53,8 @@ class HardwareMotionBase(HardwareDeviceBase):
         return NotImplemented
 
     @abstractmethod
-    def is_closed_loop(self) -> bool:
-        """Check if the hardware motion device is closed loop."""
+    def is_loop_closed(self) -> bool:
+        """Check if the hardware motion loop is closed."""
         return NotImplemented
 
     @abstractmethod
