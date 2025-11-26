@@ -79,5 +79,12 @@ class HardwareMotionBase(HardwareDeviceBase):
 
     @abstractmethod
     def get_limits(self) -> Union[Dict[str, Tuple[float, float]], None]:
-        """Get the limits of the hardware motion device."""
+        """
+        Get the limits of the hardware motion device.
+
+        Limits are the smallest and largest allowed positions for an axis.
+        Axes are identified by a string and limits are a tuple.
+        e.g.: {"1": (1, 6)} - for a filter wheel
+
+        """
         return NotImplemented
