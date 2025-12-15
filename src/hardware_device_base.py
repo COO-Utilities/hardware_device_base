@@ -58,8 +58,8 @@ class HardwareDeviceBase(ABC):
         self.status_string = ""
 
         # set up logging
+        self.verbose = False
         if log:
-            self.verbose = False
             if logfile is None:
                 logfile = __name__.rsplit(".", 1)[-1]
             self.logger = logging.getLogger(logfile)
