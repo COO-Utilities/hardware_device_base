@@ -58,20 +58,21 @@ class HardwareDeviceBase(ABC):
         self.status_string = ""
 
         # set up logging
-        self.verbose = False
-        if logfile is None:
-            logfile = __name__.rsplit(".", 1)[-1]
-        self.logger = logging.getLogger(logfile)
-        self.logger.setLevel(logging.INFO)
-        # log to console by default
-        console_formatter = logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s')
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(console_formatter)
-        if not self.logger.hasHandlers():
-            self.logger.addHandler(console_handler)
-            # log to file if requested
-            if log:
+        if log:
+            self.verbose = False
+            if logfile is None:
+                logfile = __name__.rsplit(".", 1)[-1]
+            self.logger = logging.getLogger(logfile)
+            self.logger.setLevel(logging.INFO)
+            # log to console by default
+            console_formatter = logging.Formatter(
+                '%(asctime)s - %(levelname)s - %(message)s')
+            console_handler = logging.StreamHandler()
+            console_handler.setFormatter(console_formatter)
+            if not self.logger.hasHandlers():
+                self.logger.addHandler(console_handler)
+                # log to file if requested
+
                 formatter = logging.Formatter(
                     "%(asctime)s - %(levelname)s - %(funcName)s() - %(message)s"
                 )
@@ -79,6 +80,8 @@ class HardwareDeviceBase(ABC):
                     logfile if ".log" in logfile else logfile + ".log")
                 file_handler.setFormatter(formatter)
                 self.logger.addHandler(file_handler)
+        else:
+            self.logger = None
 
     # public abstract methods
     @abstractmethod
@@ -131,26 +134,46 @@ class HardwareDeviceBase(ABC):
 
     def report_error(self, message: str, errno: int =-1) -> None:
         """Report an error message."""
-        self.logger.error(message)
+        if self.logger:
+            self.logger.error(message)
+        else:
+            print(f"ERROR ({errno}): {message}")
         self._set_status((errno, message))
 
     def report_info(self, message: str, errno: int =0) -> None:
         """Report info message."""
-        self.logger.info(message)
+        if self.logger:
+            self.logger.info(message)
+        else:
+            print(f"INFO ({errno}): {message}")
         self._set_status((errno, message))
 
     def report_warning(self, message: str, errno: int =0) -> None:
         """Report warning message."""
-        self.logger.warning(message)
+        if self.logger:
+            self.logger.warning(message)
+        else:
+            print(f"WARNING ({errno}): {message}")
         self._set_status((errno, message))
+
+    def report_debug(self, message: str) -> None:
+        """Report debug message."""
+        if self.logger:
+            self.logger.debug(message)
+        else:
+            if self.verbose:
+                print(message)
 
     def set_verbose(self, verbose: bool =True) -> None:
         """Sets verbose mode.
         :param bool verbose: Verbose mode: True (default) DEBUG level or False INFO level.
         """
         self.verbose = verbose
-        self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
-        self.logger.debug("Verbose mode: %s", verbose)
+        if self.logger:
+            self.logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+            self.logger.debug("Verbose mode: %s", verbose)
+        else:
+            print(f"Verbose mode: {verbose}.")
 
     def is_connected(self) -> bool:
         """Optional concrete method that subclasses may override.
