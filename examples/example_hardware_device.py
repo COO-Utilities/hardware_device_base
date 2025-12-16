@@ -1,5 +1,5 @@
 """
-example_hardware_sensor.py
+example_hardware_device.py
 
 TESTING:
     Use netcat (nc) on linux/unix to mock a dummy device.
@@ -38,7 +38,7 @@ class ExampleHardwareDevice(HardwareSensorBase):
         self.sock: socket.socket | None = None
         self.read_timeout = read_timeout
 
-    def connect(self, *args, con_type="tcp") -> None:
+    def connect(self, *args, con_type="tcp") -> None:  # pylint: disable=W0221
         """Connects to the device."""
         if self.validate_connection_params(args):
             if con_type == "tcp":
@@ -93,7 +93,7 @@ class ExampleHardwareDevice(HardwareSensorBase):
         self._set_status((0, "Atomic value retrieved"))
         return retval
 
-    def _send_command(self, command: str, *args) -> bool:
+    def _send_command(self, command: str, *args) -> bool:  # pylint: disable=W0221
         """Send a command to the device."""
         if not self.is_connected():
             self.logger.error("Device is not connected")

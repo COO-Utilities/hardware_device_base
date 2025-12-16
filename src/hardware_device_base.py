@@ -53,6 +53,9 @@ class HardwareDeviceBase(ABC):
         # connection status
         self.connected = False
 
+        # initialization status
+        self.initialized = False
+
         # device status
         self.status = 0
         self.status_string = ""
@@ -182,6 +185,23 @@ class HardwareDeviceBase(ABC):
             bool: Connection status.
         """
         return self.connected
+
+    def is_initialized(self) -> bool:
+        """Optional concrete method that subclasses may override.
+
+        Returns:
+            bool: Initialization status.
+        """
+        return self.initialized
+
+    def initialize(self) -> bool:
+        """Optional concrete method that subclasses may override.
+
+        Returns:
+            bool: Initialization status.
+        """
+        self.initialized = True
+        return self.initialized
 
     def validate_connection_params(self, *args) -> bool:
         """Validates connection parameters.

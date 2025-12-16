@@ -5,7 +5,8 @@ base class for sensor devices and another for motion devices.
 
 In the diagram below the methods in italics (with the *) are abstract while the
 others are concrete.  Those that begin with a '+' are public while those that
-begin with an underscore ,'_', are private.
+begin with an underscore ,'_', are private.  Methods return None unless
+otherwise indicated.
 
 NOTE: The abstract methods must be implemented, but the concrete methods
 can be used as is, or overridden.
@@ -18,6 +19,7 @@ classDiagram
     HardwareDeviceBase <|-- HardwareMotionBase
     class HardwareDeviceBase {
         +bool connected
+        +bool initialized
         +lock lock
         +Logger logger
         +int status
@@ -25,32 +27,34 @@ classDiagram
         +bool verbose
         +connect()*
         +disconnect()*
-        _send_command()*
-        _read_reply()*
-        +get_status()
-        +is_connected()
-        +report_debug()
+        _send_command()* bool
+        _read_reply()* Union[str, None]
+        +get_status() Union[Tuple[int, str], None]
+        +is_connected() bool
+        +initialize() bool
+        +is_initialized() bool
+        +report_debug() 
         +report_info()
         +report_warning()
         +report_error()
         +set_verbose()
-        +validate_connection_params()
-        _set_status()
+        +validate_connection_params() bool
+        _set_status() 
         _set_connected()
     }
 
     class HardwareSensorBase {
-        +get_atomic_value()*
+        +get_atomic_value()* Union[float, int, str, None]
     }
     
     class HardwareMotionBase {
-        +home()*
-        +is_homed()*
-        +set_pos()*
-        +get_pos()*
-        +close_loop()*
-        +is_loop_closed()*
-        +get_limits()*
+        +home()* bool
+        +is_homed()* bool
+        +set_pos()* bool
+        +get_pos()* Union[float, int, None]
+        +close_loop()* bool
+        +is_loop_closed()* bool
+        +get_limits()* Union[Dict[str, Tuple[float, float]], None]
     }
 
 ```
