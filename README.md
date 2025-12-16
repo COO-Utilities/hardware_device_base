@@ -20,3 +20,16 @@ NOTE: The abstract methods must be implemented, but the concrete methods
 can be used as is, or overridden.
 
 See example_hardware_device.py for specific implementation examples.
+
+```mermaid
+abstract class HardwareDeviceBase {
+    +connect()
+    +disconnect()
+}
+
+abstract class HardwareSensorBase {
+    +get_atomic_value()
+}
+
+HardwareDeviceBase <|-- HardwareSensorBase
+```
