@@ -30,6 +30,8 @@ class HardwareDeviceBase(ABC):
         * `get_status()`: Get the status of the device.
         * `set_verbose()`: Set the verbose level to include DEBUG logging (True) or not (False).
         * `is_connected()`: Return True if the connection is active.
+        * `initialize()`: Initialize the hardware sensor device.
+        * `is_initialized()`: Return True if the hardware sensor device is initialized.
         * `validate_connection_params()`: Validate the connection parameters.
         * `_set_connected()`: Set the connected status.
         * `_set_status()`: Set the status of the device.
