@@ -22,14 +22,15 @@ can be used as is, or overridden.
 See example_hardware_device.py for specific implementation examples.
 
 ```mermaid
-abstract class HardwareDeviceBase {
-    +connect()
-    +disconnect()
-}
+classDiagram
+    HardwareDeviceBase <|-- HardwareSensorBase
+    class HardwareDeviceBase {
+        +connect()
+        +disconnect()
+    }
 
-abstract class HardwareSensorBase {
-    +get_atomic_value()
-}
+    class HardwareSensorBase {
+        +get_atomic_value()
+    }
 
-HardwareDeviceBase <|-- HardwareSensorBase
 ```
