@@ -1,20 +1,11 @@
-# Hardware Device Base Class
-Base class for low-level hardware device modules.  It includes logging with a console logger and optional file logger.
+# Hardware Device Base Classes
+Base classes for low-level hardware device modules.  The parent base class
+includes logging with an optional console and file logger.  There is a child
+base class for sensor devices and another for motion devices.
 
-HardwareDeviceBase
-
-This class has these abstract methods:
-   - connect(host, port)
-   - disconnect()
-   - get_atomic_value(item)
-   - _send_command()
-   - _read_reply()
-
-This class also has these concrete methods:
-   - validate_connection_params()
-   - set_verbose()
-   - is_connected()
-   - _set_connected()
+In the diagram below the methods in italics (with the *) are abstract while the
+others are concrete.  Those that begin with a '+' are public while those that
+begin with an underscore ,'_', are private.
 
 NOTE: The abstract methods must be implemented, but the concrete methods
 can be used as is, or overridden.
@@ -24,6 +15,7 @@ See example_hardware_device.py for specific implementation examples.
 ```mermaid
 classDiagram
     HardwareDeviceBase <|-- HardwareSensorBase
+    HardwareDeviceBase <|-- HardwareMotionBase
     class HardwareDeviceBase {
         +bool connected
         +lock lock
@@ -33,6 +25,8 @@ classDiagram
         +bool verbose
         +connect()*
         +disconnect()*
+        _send_command()*
+        _read_reply()*
         +get_status()
         +is_connected()
         +report_debug()
@@ -41,12 +35,22 @@ classDiagram
         +report_error()
         +set_verbose()
         +validate_connection_params()
-        _send_command()
-        _read_reply()
+        _set_status()
+        _set_connected()
     }
 
     class HardwareSensorBase {
-        +get_atomic_value()
+        +get_atomic_value()*
+    }
+    
+    class HardwareMotionBase {
+        +home()*
+        +is_homed()*
+        +set_pos()*
+        +get_pos()*
+        +close_loop()*
+        +is_loop_closed()*
+        +get_limits()*
     }
 
 ```
