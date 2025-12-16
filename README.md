@@ -25,8 +25,24 @@ See example_hardware_device.py for specific implementation examples.
 classDiagram
     HardwareDeviceBase <|-- HardwareSensorBase
     class HardwareDeviceBase {
-        +connect()
-        +disconnect()
+        +bool connected
+        +lock lock
+        +Logger logger
+        +int status
+        +str status_string
+        +bool verbose
+        +connect()*
+        +disconnect()*
+        +get_status()
+        +is_connected()
+        +report_debug()
+        +report_info()
+        +report_warning()
+        +report_error()
+        +set_verbose()
+        +validate_connection_params()
+        _send_command()
+        _read_reply()
     }
 
     class HardwareSensorBase {
