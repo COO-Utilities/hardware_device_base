@@ -28,7 +28,7 @@ classDiagram
         +connect()*
         +disconnect()*
         _send_command()* bool
-        _read_reply()* Union[str, None]
+        _read_reply()* Union[str, bytes, None]
         +get_status() Union[Tuple[int, str], None]
         +is_connected() bool
         +initialize() bool
