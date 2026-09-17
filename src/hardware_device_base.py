@@ -40,7 +40,7 @@ class HardwareDeviceBase(ABC):
     See example_hardware_device_base.py for example usage.
     """
 
-    def __init__(self, log: bool =True, logfile: str = None):
+    def __init__(self, log: bool =True, logfile: str | None = None):
         """Instantiate the device class
 
         :param bool log: If True, log to file, otherwise log to stdout.
@@ -127,7 +127,7 @@ class HardwareDeviceBase(ABC):
         return NotImplemented
 
     @abstractmethod
-    def _read_reply(self) -> Union[str, None]:
+    def _read_reply(self) -> Union[str, bytes, None]:
         """Receive a reply from the device.
         :return: The reply or None if no reply was received."""
         return NotImplemented
